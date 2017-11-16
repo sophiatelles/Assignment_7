@@ -1,0 +1,119 @@
+---
+title: "Assignment 7"
+author: "Sophia Telles & Samantha Driscoll"
+date: "November 2, 2017"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+ 
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(htmlwidgets)
+library(readxl)
+library(sunburstR)
+
+sfbage=read_excel("spokanefbage.xlsx")
+sfbsex=read_excel("spokanefbsex.xlsx")
+sfbethnicity=read_excel("spokanefbethnicitys.xlsx")
+sfbeducation=read_excel("sfbeducation.xlsx")
+sfbmarital=read_excel("spokanefbmarital.xlsx")
+```
+
+
+ 
+# Sex categorized by Citizenship and Origin 
+```{r}
+sfbsex1=select(sfbsex,Gender,Origin,Citizenship,Number)
+sfbsex1$Citizenship<- as.character(sfbsex1$Citizenship)
+sfbsex1$Citizenship[is.na(sfbsex1$Citizenship)] <- ""
+sfbsex1$combo=paste(sfbsex1$Gender,sfbsex1$Origin,sfbsex1$Citizenship,sep="-")
+sfbsex1$combo=gsub("-$","",sfbsex1$combo)
+sex=sfbsex1%>%group_by(combo=combo)%>%summarise(Number=sum(Number))
+myburst1=sunburst(sex[,c(1,2)])
+saveWidget(myburst1,file="myburst1.html",selfcontained=TRUE)
+myburst1
+```
+
+It seems that there are an almost equal amount of males and females in this data set who are foreign born verses Native and Naturalized verses Non-U.S. Citizens. There are slightly more Native Males and slightly more Foreign Born Females in this data set, by just a fraction of a percentage. 
+ 
+ 
+
+# Age categorized by Citizenship and Origin 
+```{r}
+sfbage=select(sfbage,Age,Origin,Citizenship,Number)
+sfbage$Citizenship<- as.character(sfbage$Citizenship)
+sfbage$Citizenship[is.na(sfbage$Citizenship)] <- ""
+sfbage$combo=paste(sfbage$Age,sfbage$Origin,sfbage$Citizenship,sep="-")
+sfbage$combo=gsub("-$","",sfbage$combo)
+age=sfbage%>%group_by(combo=combo)%>%summarise(Number=sum(Number))
+myburstage=sunburst(age[,c(1,2)])
+saveWidget(myburstage,file="myburstage.html",selfcontained=TRUE)
+myburstage
+```
+
+The largest population of foreign born citizens, both naturalized and non-citizens, is within the age group 25-44. However, that is the largest age population of this sample overall, so that isn't necessarily indicative of a pattern for foreign born citizens specifically. Overall, it seems like between .05 and 1 percent of each age group is made up of foreign born citizens, and its roughly 50/50 whether or not individuals are naturalized or non-citizens, though its slightly more common for them to be naturalized.Since 16% of the age category 5-16 is made up of foreign born people, this makes access to education extremely important. 
+
+
+# Marital status categorized by Citizenship and Origin
+```{r}
+sfbmarital=select(sfbmarital,Marital.Status,Origin,Citizenship,Number)
+sfbmarital$Citizenship<- as.character(sfbmarital$Citizenship)
+sfbmarital$Citizenship[is.na(sfbmarital$Citizenship)] <- ""
+sfbmarital$combo=paste(sfbmarital$Marital.Status,sfbmarital$Origin,sfbmarital$Citizenship,sep="-")
+sfbmarital$combo=gsub("-$","",sfbmarital$combo)
+marital=sfbmarital%>%group_by(combo=combo)%>%summarise(Number=sum(Number))
+myburstmarital=sunburst(marital[,c(1,2)])
+saveWidget(myburstmarital,file="myburstage.html",selfcontained=TRUE)
+myburstmarital
+```
+
+The most common marital status for the foreign born population is "Now married, except seperated" at about 7.6% verses the others that are less than 2% are representative of the foreign born population. This is also the largest population of Native respondants, so it could just be that this is the largest population overall. The second largest population of foreign born people is in the cateogory of never married, at 2.8%. This could be becuase the age range starts at 25 years old, however, and the largest number of respondents was 25-44. 7% if the population of seperated individuals being foreign born is quite high, and could be representative of couples who are moving to the U.S. still. 
+
+
+# Ethnicity categorized by Citizenship and Origin 
+
+```{r}
+sfbethnicity=select(sfbethnicity,Ethnicity,Origin,Citizenship,Number)
+sfbethnicity$Citizenship<- as.character(sfbethnicity$Citizenship)
+sfbethnicity$Citizenship[is.na(sfbethnicity$Citizenship)] <- ""
+sfbethnicity$combo=paste(sfbethnicity$Ethnicity,sfbethnicity$Origin,sfbethnicity$Citizenship,sep="-")
+sfbethnicity$combo=gsub("-$","",sfbethnicity$combo)
+ethnicity=sfbethnicity%>%group_by(combo=combo)%>%summarise(Number=sum(Number))
+myburstethnicity=sunburst(ethnicity[,c(1,2)])
+saveWidget(myburstethnicity,file="myburstethnicity.html",selfcontained=TRUE)
+myburstethnicity
+```
+
+For this graph we removed data that wouldn't tell us anything about the ethnic percentages of our foreign born population. The categories "One race", "Two or More Races" and "White/Native Born" were removed because they were greatly disproportionate to the rest of the data without providing any helpful information. Of the Hispanic and Latino population, 65% of the respondents were foreign born. 31% of that population of Hispanic foreign born respondents are not citizens. Interestingly, 11% of people who are White are also foreign born, which is the second largest population of foreign born respondents. This is likely due to people moving to the U.S. from Europe. 
+
+
+#Educational Attainment categorized by Citizenship and Origin
+```{r}
+sfbeducation=select(sfbeducation,Education,Origin,Citizenship,Number)
+sfbeducation$Citizenship<- as.character(sfbeducation$Citizenship)
+sfbeducation$Citizenship[is.na(sfbeducation$Citizenship)] <- ""
+sfbeducation$combo=paste(sfbeducation$Education,sfbeducation$Origin,sfbeducation$Citizenship,sep="-")
+sfbeducation$combo=gsub("-$","",sfbeducation$combo)
+education=sfbeducation%>%group_by(combo=combo)%>%summarise(Number=sum(Number))
+mybursteducation=sunburst(education[,c(1,2)])
+saveWidget(mybursteducation,file="mybursteducation.html",selfcontained=TRUE)
+mybursteducation
+```
+
+The highest percentage of educational attainment for foreign born citizens is "some college or associates degree" is only 4%, which is nearly the same amount of the foreign born population that only has a highschool diploma or equivilant, and only 2% more than the popualtion within the catrogy those who did not even finish highschool. Also, when compared to the native population, where 34% of people with associates degrees were native born, it simply doesnt compare. This really shows the need for improved education systems and opportunities for those who are not Native citizens. 
+
+
+#Conculsion and limiations
+In conclusion, in most respects the population of foreign born people who are citizens verses those who are not was generally equal, with the amount of naturalized citizens being slightly higher every time. There are more males who are foreign born but more females who are naturalized citizens. However, it seems like the count is incorrect on the amount of respondents who are naturalized and non-citizens because the percentages do not equal 4.8%, the total amount of meals who were foreign born. 
+
+Most of the foreign born respondents were between ages 24 and 44, with the second larget population being 5-17. The population of young people who are also foreign born is very large, making it very important that this population have access to education. However, it seems that the educational attainment of the foreign born population is low, which we suppose could be indicative of the face that the younger population is highly represented in this dataframe and most of those respondents are not old enough to be out of school yet. However, we cannot assume that and it seems that the educational opportunities for the foreign born population are not easily attainable for this group, as most of them hadnt finished highschool or did finish highschool but never went to get an Associates or Bachelors degree. 
+
+As far as ethnicity, the population of those who are not born in the United states was over 60% Latino or Hispanic. As far as education goes, only a little over 3% of people who attained their high school diploma or equivilent were foreign born. Knowing these two facts, it's reasonable to think that education in the Spokane community might be less attainable for those who identify as Latino or Hispanic. 
+
+Measures should be taken to further provide options for people to more easily attain higher levels of education. This can be accomplished through scholarships, grants, higher education information in high school, and a reformation of the education system in the United States as a whole. 
